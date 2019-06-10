@@ -3,22 +3,25 @@ package main
 import (
 	"io"
 	"net/http"
+	"os/exec"
+	"log"
 )
 
-func Print1To20() int {
-	res := 0;
-	for i := 1; i<=20 ; i++{
-		res += i
+func reLaunch() {
+	cmd := exec.Command("sh" , "./deploy.sh")
+	err := cmd.Start()
+	if err != nil {
+		log.Fatal(err)
 	}
-	return res
+	err = cmd.Wait()
 }
 
 func firstPage(w http.ResponseWriter,r *http.Request) {
-	io.WriteString(w,"<h1> This is my first page</h1>");
-
+	io.WriteString(w,"<h1> This is my deploy</h1>");
+	reLaunch()
 }
 
 func main() {
 	http.HandleFunc("/",firstPage);
-	http.ListenAndServe(":8001",nil);
+	http.ListenAndServe(":5000",nil);
 }
